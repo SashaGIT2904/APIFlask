@@ -72,7 +72,7 @@ def delete_member(member_id):
     return jsonify({"done": True}), 200
 
 
-# Falta implementar delete_member y get_member en datastructures.py
+
 
 
 # This only runs if `$ python src/app.py` is executed
