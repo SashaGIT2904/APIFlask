@@ -5,9 +5,6 @@ Update this file to implement the following already declared methods:
 - get_member: Should return a member from the self._members list
 """
 
-from random import randint
-
-
 class FamilyStructure:
     def __init__(self, last_name):
         self.last_name = last_name
@@ -20,7 +17,6 @@ class FamilyStructure:
                 "age": 33,
                 "lucky_numbers": [7, 13, 22]
             },
-
             {
                 "id": self._generate_id(),
                 "first_name": "Jane",
@@ -28,7 +24,6 @@ class FamilyStructure:
                 "age": 35,
                 "lucky_numbers": [10, 14, 3]
             },
-
             {
                 "id": self._generate_id(),
                 "first_name": "Jimmy",
@@ -36,32 +31,37 @@ class FamilyStructure:
                 "age": 5,
                 "lucky_numbers": [1]
             }
-
         ]
 
     # This method generates a unique incremental ID
     def _generate_id(self):
-        return randint(0, 99999999)
+        generated_id = self._next_id
+        self._next_id += 1
+        return generated_id
 
     def add_member(self, member):
         member['last_name'] = self.last_name
-        member['id'] = self._generate_id()
+        if member.get('id') is None:
+            member['id'] = self._generate_id()
+        else:
+            # si viene un id manual, ajusta el contador para evitar choques
+            if member['id'] >= self._next_id:
+                self._next_id = member['id'] + 1
         self._members.append(member)
-        print(self._members)
+        return member
 
     def delete_member(self, id):
         for member in self._members:
-            if member["id"] == id:
+            if member ["id"] == id:
                 self._members.remove(member)
                 return True
         return False
 
     def get_member(self, id):
         for member in self._members:
-            if member["id"] == id:
+            if member ["id"] == id:
                 return member
-        return False
-        
+        return None
 
     # This method is done, it returns a list with all the family members
     def get_all_members(self):

@@ -29,50 +29,53 @@ def sitemap():
     return generate_sitemap(app)
 
 
-@app.route('/member', methods=['POST'])
+# POST /members 
+@app.route('/members', methods=['POST'])
 def add_member():
 
     body = request.get_json(silent=True)
+    if not body:
+        return jsonify({"msg": "JSON inválido"}), 400
     if 'first_name' not in body:
         return jsonify({"msg": "Falta el nombre"}), 400
     if 'age' not in body:
         return jsonify({"msg": "Falta la edad"}), 400
     if 'lucky_numbers' not in body:
         return jsonify({"msg": "Faltan los numeros de la suerte"}), 400
+
     new_member = {
-        "id": body["id"],
+        "id": body.get("id"),
         "first_name": body["first_name"],
-        "last_name": "Jackson",
         "age": body["age"],
         "lucky_numbers": body["lucky_numbers"]
     }
     member = jackson_family.add_member(new_member)
-    return jsonify({'msg': 'Miembro agregado', 'member': member}), 200
-
-
-def get_member(member_id):
-    member = jackson_family.get_member(member_id)
-    if member is None:
-        return jsonify({"msg": "Miembro no encontrado"}), 400  
     return jsonify(member), 200
 
 
+# GET /members/<id>
+@app.route('/members/<int:member_id>', methods=['GET'])
+def get_member(member_id):
+    member = jackson_family.get_member(member_id)
+    if member is None:
+        return jsonify({"msg": "Miembro no encontrado"}), 404
+    return jsonify(member), 200
+
+
+# GET /members
 @app.route('/members', methods=['GET'])
 def get_members():
+    members = jackson_family.get_all_members()
+    return jsonify(members), 200
 
-    member = jackson_family.get_all_members()
 
-    return jsonify({'members': member}), 200
-
+# DELETE /members/<id>
 @app.route('/members/<int:member_id>', methods=['DELETE'])
 def delete_member(member_id):
     deleted = jackson_family.delete_member(member_id)
     if not deleted:
-        return jsonify({"msg": "Miembro no encontrado"}), 400
+        return jsonify({"msg": "Miembro no encontrado"}), 404
     return jsonify({"done": True}), 200
-
-
-
 
 
 # This only runs if `$ python src/app.py` is executed
