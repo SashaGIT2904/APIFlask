@@ -4,7 +4,7 @@ Update this file to implement the following already declared methods:
 - delete_member: Should delete a member from the self._members list
 - get_member: Should return a member from the self._members list
 """
-
+#Family structure sirve para manejar los datos de los miembros de la familia
 class FamilyStructure:
     def __init__(self, last_name):
         self.last_name = last_name
@@ -33,36 +33,35 @@ class FamilyStructure:
             }
         ]
 
-    # This method generates a unique incremental ID
+    # Este método genera un ID único para cada miembro nuevo
     def _generate_id(self):
         generated_id = self._next_id
         self._next_id += 1
         return generated_id
-
+    # Agrega un nuevo miembro a la lista de miembros de la familia
     def add_member(self, member):
         member['last_name'] = self.last_name
         if member.get('id') is None:
             member['id'] = self._generate_id()
         else:
-            # si viene un id manual, ajusta el contador para evitar choques
             if member['id'] >= self._next_id:
                 self._next_id = member['id'] + 1
         self._members.append(member)
         return member
-
+    # Elimina un miembro de la lista de miembros de la familia por su ID
     def delete_member(self, id):
         for member in self._members:
             if member ["id"] == id:
                 self._members.remove(member)
                 return True
         return False
-
+    # Devuelve un miembro de la lista de miembros de la familia por su ID
     def get_member(self, id):
         for member in self._members:
             if member ["id"] == id:
                 return member
         return None
 
-    # This method is done, it returns a list with all the family members
+    # Este método devuelve una lista con todos los miembros de la familia   
     def get_all_members(self):
         return self._members
